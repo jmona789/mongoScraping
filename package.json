@@ -23,7 +23,8 @@
     "express": "^4.13.4",
     "express-handlebars": "^3.0.0",
     "mongojs": "^2.3.0",
-    "mongoose": "^4.4.6",
+    "mongoose": "^4.4.7",
+    "morgan": "^1.7.0",
     "request": "^2.69.0"
   }
 }

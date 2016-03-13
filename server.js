@@ -5,7 +5,18 @@ var request = require("request");
 var cheerio = require("cheerio");
 var expressHandlebars = require("express-handlebars");
 var bodyparser = require("body-parser");
+var logger = require("morgan");
+var mongoose = require("mongoose");
 var PORT = process.env.PORT || 9001;
+
+//logger set up
+app.use(logger("dev"));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
+
+//static folder
+app.use(express.static("public"));
 
 //Handlebars set up
 app.engine("handlebars", expressHandlebars({
@@ -46,8 +57,12 @@ app.get("/data", function (req, res) {
     if (err){
       throw err;
     }
-    res.json(dbResults);
+    res.render("data", {data: dbResults});
+    // res.json(dbResults);
   });
+});
+
+app.post(".notes", function(req, res){ 
 });
 
 app.listen(PORT, function() {

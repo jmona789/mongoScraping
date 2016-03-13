@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Data</title>
+</head>
+<body>
+<ol>
+{{#each data}}
+  <li>{{title}}</li><form method="POST" action="/notes">Make a note about this data: <input type="text" placeholder="Note..."></input><input class="hidden" value="{{_id}}"></input></form>
+{{/each}}
+</body>
+</html>
