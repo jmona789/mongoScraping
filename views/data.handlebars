@@ -6,7 +6,8 @@
 <body>
 <ol>
 {{#each data}}
-  <li>{{title}}</li><form method="POST" action="/notes">Make a note about this data: <input type="text" placeholder="Note..."></input><input class="hidden" value="{{_id}}"></input></form>
+  <li>{{data}}</li><form method="POST" action="/notes">Make a note about this data: <input type="text" name="note" placeholder="Note..."></input><input class="hidden" name="id" value="{{_id}}"></input><button class="btn-primary" type="submit">Submit</button></form>
 {{/each}}
+</ol>
 </body>
 </html>

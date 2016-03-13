@@ -11,7 +11,7 @@ var PORT = process.env.PORT || 9001;
 
 //logger set up
 app.use(logger("dev"));
-app.use(bodyParser.urlencoded({
+app.use(bodyparser.urlencoded({
   extended: false
 }));
 
@@ -26,13 +26,19 @@ app.engine("handlebars", expressHandlebars({
 app.set("view engine", "handlebars");
 
 //Database configuration
-var mongojs = require("mongojs");
-var databaseUrl = "mongoScraperDB";
-var collections = ["scrapedData"];
-var db = mongojs(databaseUrl, collections);
+mongoose.connect("mongodb://localhost/mongoScrapingDB");
+var db = mongoose.connection;
+
 db.on("error", function(err) {
-  console.log("Database Error:", err);
+  console.log("Mongoose Error: ", err);
 });
+db.once("open", function() {
+  console.log("Mongoose connection successful.");
+});
+
+//Require Schemas
+var Note = require("./noteModel.js");
+var Data = require("./dataModel.js");
 
 //Home page
 app.get("/", function (req, res) {
@@ -46,23 +52,58 @@ app.get("/scraper", function(req, res){
     $("h3.yt-lockup-title").each(function(i, element){
       var a = $(this);
       var text = a.text();
-      db.scrapedData.save({title: text});
+      var data = new Data({
+        data: text
+      });
+      data.save(function(err, doc) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(doc);
+        }
+      });
     });
   });
   res.redirect("/")
 });
 
 app.get("/data", function (req, res) {
- db.scrapedData.find({}, function(err, dbResults){
+ Data.find({}, function(err, data){
     if (err){
       throw err;
     }
-    res.render("data", {data: dbResults});
-    // res.json(dbResults);
+    Note.find({}, function(err, note){
+      if (err){
+        throw err;
+      }
+      res.render("data", {data: data});
+    });
   });
 });
 
-app.post(".notes", function(req, res){ 
+//New Note Creation
+app.post("/notes", function(req, res) {
+  var id = req.body.id
+  var newNote = new Note(req.body);
+ 
+//Save the new note
+  newNote.save(function(err, doc) {
+    if (err) {
+      res.send(err);
+    } else {
+
+//Find the cooressponding data and push the new note id into the data's notes array
+      Data.findOneAndUpdate({_id: id}, {$push: {"notes": doc._id}}, {new: true}, function(err, doc) {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send(doc);
+        }
+      });
+
+    }
+  });
+
 });
 
 app.listen(PORT, function() {
