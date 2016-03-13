@@ -76,6 +76,8 @@ app.get("/data", function (req, res) {
       if (err){
         throw err;
       }
+      data.note = note;
+      console.log(data.note);      
       res.render("data", {data: data});
     });
   });

@@ -4,9 +4,20 @@
   <title>Data</title>
 </head>
 <body>
+{{#each note}}
+  <p>{{note}}</p>
+{{/each}}
+
 <ol>
 {{#each data}}
   <li>{{data}}</li><form method="POST" action="/notes">Make a note about this data: <input type="text" name="note" placeholder="Note..."></input><input class="hidden" name="id" value="{{_id}}"></input><button class="btn-primary" type="submit">Submit</button></form>
+  
+  <ul>
+    {{#each note}}
+    <li>{{note}}</li>
+    {{/each}}
+  </ul>
+
 {{/each}}
 </ol>
 </body>
