@@ -72,14 +72,24 @@ app.get("/data", function (req, res) {
     if (err){
       throw err;
     }
-    Note.find({}, function(err, note){
-      if (err){
-        throw err;
-      }
-      data.note = note;
-      console.log(data.note);      
-      res.render("data", {data: data});
-    });
+    // data[0].notes.forEach(function(data1, i, arr){
+    //   Note.find({_id: data1}, function(err, note){
+    //     if (err){
+    //       throw err;
+    //     }
+    //     data[0].noteText.push(note)
+    //     // console.log(note[0].note);
+    //   })
+    // })
+    // console.log(note);
+    // note.forEach(function(note, i, arr){
+    //   data.notes.push(note);
+    // })
+    // console.log(data);
+    // console.log(data[0].notes);
+    // console.log(data[0].noteText);
+    console.log(data)
+    res.render("data", {data: data});
   });
 });
 
@@ -99,13 +109,21 @@ app.post("/notes", function(req, res) {
         if (err) {
           res.send(err);
         } else {
-          res.send(doc);
+          res.redirect("/data");
         }
       });
 
     }
   });
+});
 
+app.get("/:noteID", function(req, res){
+  Note.find({_id: req.params.noteID}, function(err, note){
+    if (err){
+      throw err;
+    }
+    res.render("notes", {notes: note});
+  });
 });
 
 app.listen(PORT, function() {
